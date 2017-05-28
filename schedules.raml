@@ -1,0 +1,179 @@
+#%RAML 1.0
+---
+title: schedules
+description: Documentation for the Schedules API.
+version: v2
+baseUri: https://schedules.gmu.edu/api/{version}
+protocols: [ HTTP, HTTPS ]
+mediaType: [application/json, application/ical]
+
+types:
+  Campus:
+    type: object
+    properties:
+      slug:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+      address:
+        required: true
+        type: string
+      timezone:
+        required: true
+        type: string
+
+  Semester:
+    type: object
+    properties:
+      slug:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+        pattern: /^Fall|Winter|Spring|Summer$/
+      year:
+        required: true
+        type: string
+
+  Semesters:
+    type: Semester[]
+    minItems: 0
+    uniqueItems: true
+    displayName: Semesters
+
+  Course:
+    type: object
+    properties:
+      slug:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+
+  Courses:
+    type: Course[]
+    minItems: 0
+    uniqueItems: true
+
+  Session:
+    type: object
+    properties:
+      location:
+        required: true
+        type: Campus # Contains timezone information
+      days:
+        required: true
+        type: string[]
+        example:
+          - "MON"
+          - "TUES"
+          - "WED"
+          - "THURS"
+          - "FRI"
+          - "SAT"
+          - "SUN"
+      startTime:
+        required: true
+        type: time-only
+      endTime:
+        required: true
+        type: time-only
+
+  Sessions:
+    type: Session[]
+    minItems:  0
+    uniqueItems: true
+
+  Section:
+    type: object
+    properties:
+      course:
+        required: true
+        type: Course
+      sessions:
+        required: true
+        type: Sessions
+      professor:
+        required: false
+        type: string
+      class_type:
+        required: true
+        type: string
+      #Start - End Date included in Semester
+
+
+  Sections:
+    type: Section[]
+    minItems: 0
+    uniqueItems: true
+
+
+/semesters:
+  get:
+  /{semesterSlug}:
+    get:
+    /{page}:
+
+
+/courses:
+  get:
+    queryParameters:
+      semester:
+        displayName: Semester
+        type: string
+        description: >
+          The semester slug to pull courses from. Any course which has a
+          class which took place in the given semester will be returned.
+        example: SP2017 # Spring, 2017
+        required: false
+      professor:
+        displayName: Professor
+        type: string
+        description: >
+          The professor slug to pull courses from. Any course which has ever
+          been taught by the given professor will be returned. This should be
+          given in the form of a valid netid (for SRCT's implementation at
+          least).
+        example: mstengle
+        required: false
+
+  /{courseSlug}:
+    get:
+
+
+/classes:
+  get:
+
+  /{semesterSlug}/{classSlug}:
+    get:
+
+
+/schedule:
+  get:
+    queryParameters:
+      classes:
+        displayName: Classes Taken
+        type: string[]
+        uniqueItems: true
+        minItems: 1
+        description: >
+          The classes to compile into one full calendar file. These should be
+          given as CRNs (Course Registration Number).
+        example:
+          - "234567"
+          - "234568"
+        required: true
+      semester:
+        displayName: Semester
+        type: string
+        description: >
+          The semester for which the calendar should be generated for. While
+          optional, this setting will cause the service to validate the CRNs
+          to be sure that the classes selected all take place in the
+          selected semester.
+        example: SP2017 # Spring, 2017
+        required: false
