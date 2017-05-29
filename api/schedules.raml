@@ -38,12 +38,6 @@ types:
         required: true
         type: string
 
-  Semesters:
-    type: Semester[]
-    minItems: 0
-    uniqueItems: true
-    displayName: Semesters
-
   Course:
     type: object
     properties:
@@ -53,11 +47,6 @@ types:
       name:
         required: true
         type: string
-
-  Courses:
-    type: Course[]
-    minItems: 0
-    uniqueItems: true
 
   Session:
     type: object
@@ -83,11 +72,6 @@ types:
         required: true
         type: time-only
 
-  Sessions:
-    type: Session[]
-    minItems:  0
-    uniqueItems: true
-
   Section:
     type: object
     properties:
@@ -105,18 +89,34 @@ types:
         type: string
       #Start - End Date included in Semester
 
-
-  Sections:
-    type: Section[]
-    minItems: 0
-    uniqueItems: true
+/campus:
+  get:
 
 
 /semesters:
   get:
+    queryParameters:
+      page:
+        displayName: Page
+        description: >
+          Allows for paged access to the data to avoid huge bulk transfers.
+        type: number
+        required: true
+        default: 0
+        example: 2
+    responses:
+      200:
+        body:
+          type: Semesters
+          maxItems: 25
+          minItems: 0
   /{semesterSlug}:
     get:
-    /{page}:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Semester
 
 
 /courses:
@@ -128,7 +128,7 @@ types:
         description: >
           The semester slug to pull courses from. Any course which has a
           class which took place in the given semester will be returned.
-        example: SP2017 # Spring, 2017
+        example: "SP2017" # Spring, 2017
         required: false
       professor:
         displayName: Professor
@@ -138,9 +138,35 @@ types:
           been taught by the given professor will be returned. This should be
           given in the form of a valid netid (for SRCT's implementation at
           least).
-        example: mstengle
         required: false
-
+        example: "mstengle"
+      page:
+        displayName: Page
+        description: >
+          Allows for paged access to the data to avoid huge bulk transfers.
+        type: number
+        required: true
+        default: 0
+        example: 2
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              data:
+                type: Course[]
+                uniqueItems: true
+                minItems: 0
+                maxItems: 25
+                required: true
+              last_page:
+                type: boolean
+                required: true
+                description: >
+                  If more data can be found on the next page, this will be
+                  false. If it is the last page, it will say true. Please check
+                  this in your client to avoid unneeded queries.
   /{courseSlug}:
     get:
 
@@ -148,7 +174,7 @@ types:
 /classes:
   get:
 
-  /{semesterSlug}/{classSlug}:
+  /{classSlug}:
     get:
 
 
@@ -175,5 +201,5 @@ types:
           optional, this setting will cause the service to validate the CRNs
           to be sure that the classes selected all take place in the
           selected semester.
-        example: SP2017 # Spring, 2017
         required: false
+        example: "SP2017" # Spring, 2017
