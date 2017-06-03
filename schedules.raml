@@ -51,9 +51,12 @@ types:
   Session:
     type: object
     properties:
-      location:
+      Campus:
         required: true
         type: Campus # Contains timezone information
+      Room:
+        required: true
+        type: string
       days:
         required: true
         type: string[]
