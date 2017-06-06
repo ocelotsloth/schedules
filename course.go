@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 // Course Collections
@@ -28,14 +28,13 @@ func HandleCourseCreate(rw http.ResponseWriter, r *http.Request, p httprouter.Pa
 // Course Singular
 
 func HandleCourseShow(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleCourseEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleCourseDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
-}
 
+}

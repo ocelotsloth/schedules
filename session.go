@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 // Session Collections
@@ -28,14 +28,13 @@ func HandleSessionCreate(rw http.ResponseWriter, r *http.Request, p httprouter.P
 // Session Singular
 
 func HandleSessionShow(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleSessionEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleSessionDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
-}
 
+}

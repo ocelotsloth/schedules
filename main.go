@@ -108,55 +108,55 @@ func startAPI() {
 	r.POST("/campuses", HandleCampusCreate)
 
 	// Campus Singular
-	r.GET("/campuses/:slug", HandleCampusShow)
-	r.GET("/campuses/:slug/edit", HandleCampusEdit)
-	r.DELETE("/campuses/:slug", HandleCampusDelete)
+	r.GET("/campuses/:Slug", HandleCampusShow)
+	r.PATCH("/campuses/:Slug", HandleCampusEdit)
+	r.DELETE("/campuses/:Slug", HandleCampusDelete)
 
 	// Semester Collection
 	r.GET("/semesters", HandleSemesterIndex)
 	r.POST("/semesters", HandleSemesterCreate)
 
 	// Semester Singular
-	r.GET("/semesters/:slug", HandleSemesterShow)
-	r.GET("/semesters/:slug/edit", HandleSemesterEdit)
-	r.DELETE("/semesters/:slug", HandleSemesterDelete)
+	r.GET("/semesters/:Slug", HandleSemesterShow)
+	r.PATCH("/semesters/:Slug", HandleSemesterEdit)
+	r.DELETE("/semesters/:Slug", HandleSemesterDelete)
 
 	// Course Collection
 	r.GET("/courses", HandleCourseIndex)
 	r.POST("/courses", HandleCourseCreate)
-	
+
 	// Course Singular
-	r.GET("/courses/:slug", HandleCourseShow)
-	r.GET("/courses/:slug/edit", HandleCourseEdit)
-	r.DELETE("/courses/:slug", HandleCourseDelete)
+	r.GET("/courses/:Slug", HandleCourseShow)
+	r.PATCH("/courses/:Slug", HandleCourseEdit)
+	r.DELETE("/courses/:Slug", HandleCourseDelete)
 
 	// Session Collection
 	r.GET("/sessions", HandleSessionIndex)
 	r.POST("/sessions", HandleSessionCreate)
 
 	// Session Singular
-	r.GET("/sessions/:slug", HandleSessionShow)
-	r.GET("/sessions/:slug/edit", HandleSessionEdit)
-	r.DELETE("/sessions/:slug", HandleSessionDelete)
+	r.GET("/sessions/:Slug", HandleSessionShow)
+	r.PATCH("/sessions/:Slug", HandleSessionEdit)
+	r.DELETE("/sessions/:Slug", HandleSessionDelete)
 
 	// ClassType Collection
 	r.GET("/classTypes", HandleClassTypeIndex)
 	r.POST("/classTypes", HandleClassTypeCreate)
 
 	// ClassType Singular
-	r.GET("/classTypes/:slug", HandleClassTypeShow)
-	r.GET("/classTypes/:slug/edit", HandleClassTypeEdit)
-	r.DELETE("/ClassTypes/:slug", HandleClassTypeDelete)
+	r.GET("/classTypes/:Slug", HandleClassTypeShow)
+	r.PATCH("/classTypes/:Slug", HandleClassTypeEdit)
+	r.DELETE("/ClassTypes/:Slug", HandleClassTypeDelete)
 
 	// Section Collection
 	r.GET("/sections", HandleSectionIndex)
 	r.PUT("/sections", HandleSectionCreate)
 
 	// Section Singular
-	r.GET("/sections/:slug", HandleSectionShow)
-	r.GET("/sections/:slug/edit", HandleSectionEdit)
-	r.DELETE("/sections/:slug", HandleSectionDelete)
-	
+	r.GET("/sections/:Slug", HandleSectionShow)
+	r.PATCH("/sections/:Slug", HandleSectionEdit)
+	r.DELETE("/sections/:Slug", HandleSectionDelete)
+
 	// Calendar Generation
 	r.GET("/calendar", HandleCalendarGET)
 
@@ -180,5 +180,4 @@ func loadTemplates() {
 		}
 	}
 	templates, err = template.New("").ParseFiles(allFiles...) //parses all .html files in the 'templates' folder
-
 }

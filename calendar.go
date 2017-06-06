@@ -11,4 +11,3 @@ import (
 func HandleCalendarGET(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Fprintln(rw, "Calendar Generate")
 }
-

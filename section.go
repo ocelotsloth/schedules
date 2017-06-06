@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 // Section Collections
@@ -28,7 +28,7 @@ func HandleSectionCreate(rw http.ResponseWriter, r *http.Request, p httprouter.P
 // Section Singular
 
 func HandleSectionShow(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Fprintln(rw, "Section Show")	
+	fmt.Fprintln(rw, "Section Show")
 }
 
 func HandleSectionEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -38,4 +38,3 @@ func HandleSectionEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Par
 func HandleSectionDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Fprintln(rw, "Section Delete")
 }
-

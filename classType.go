@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 // Class Type Collections
@@ -28,14 +28,13 @@ func HandleClassTypeCreate(rw http.ResponseWriter, r *http.Request, p httprouter
 // Class Type Singular
 
 func HandleClassTypeShow(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleClassTypeEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleClassTypeDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
-}
 
+}

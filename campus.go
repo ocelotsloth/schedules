@@ -1,10 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"github.com/imdario/mergo"
 	"net/http"
-	"encoding/json"
 )
 
 // Campus Collections
@@ -18,39 +19,111 @@ func HandleCampusIndex(rw http.ResponseWriter, r *http.Request, p httprouter.Par
 		fmt.Fprintf(rw, "Error Retrieving Campuses\n")
 		return
 	}
+	rw.WriteHeader(http.StatusOK)
 	json.NewEncoder(rw).Encode(campuses)
 }
 
 func HandleCampusCreate(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// https://stackoverflow.com/a/15685432
-	decoder := json.NewDecoder(r.Body)
 	var newCampus Campus
-	err := decoder.Decode(&newCampus)
+	err := json.NewDecoder(r.Body).Decode(&newCampus)
 	if err != nil {
 		log.Critical(err.Error())
-		panic(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(rw, "Error Decoding Request\n")
+		return
 	}
 	defer r.Body.Close()
 
-	if database.NewRecord(newCampus) {
-		database.Create(&newCampus)
+	tx := database.Begin()
+	if err := tx.Create(&newCampus).Error; err != nil {
+		tx.Rollback()
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "Error writing to database\n")
+		return
 	}
-	log.Info("Created new campus with ID=" + string(newCampus.ID) + ".")
+	tx.Commit()
 
+	log.Info("Created new campus with ID=" + string(newCampus.ID) + ".")
+	rw.WriteHeader(http.StatusOK)
 	fmt.Fprintln(rw, newCampus.ID)
 }
 
 // Campus Singular
 
 func HandleCampusShow(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Fprintln(rw, "CampusShow")
+	var campus Campus
+	dbOp := database.Where("Slug = ?", p.ByName("Slug")).First(&campus)
+	if dbOp.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(rw, "Record not found.\n")
+		return
+	}
+	if dbOp.Error != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "Internal Server Error\n")
+		log.Critical(dbOp.Error.Error())
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	json.NewEncoder(rw).Encode(campus)
 }
 
 func HandleCampusEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Fprintln(rw, "CampusEdit")
+	// https://stackoverflow.com/a/15685432
+	var campus Campus
+	var changedCampus interface{}
+	err := json.NewDecoder(r.Body).Decode(&changedCampus)
+	if err != nil {
+		log.Critical(err.Error())
+		rw.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(rw, "Error Decoding Request\n")
+		return
+	}
+	defer r.Body.Close()
+
+	dbOp := database.Where("Slug = ?", p.ByName("Slug")).First(&campus)
+	if dbOp.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(rw, "Record not found.\n")
+		return
+	}
+	if dbOp.Error != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "Internal Server Error\n")
+		log.Critical(dbOp.Error.Error())
+		return
+	}
+
+	mergo.Merge(&changedCampus, campus)
+
+	json.NewEncoder(rw).Encode(changedCampus)
 }
 
 func HandleCampusDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Fprintln(rw, "CampusDelete")
+	var campus Campus
+	dbOp := database.Where("Slug = ?", p.ByName("Slug")).First(&campus)
+	if dbOp.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(rw, "Record not found.\n")
+		return
+	}
+	if dbOp.Error != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "Internal Server Error\n")
+		log.Critical(dbOp.Error.Error())
+		return
+	}
+	tx := database.Begin()
+	err := tx.Unscoped().Delete(&campus).Error
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "Internal Server Error\n")
+		log.Critical(dbOp.Error.Error())
+		return
+	}
+	tx.Commit()
+	log.Info(fmt.Sprintf("Record \"%s\" deleted.", campus.Slug))
+	rw.WriteHeader(http.StatusOK)
+	fmt.Fprintf(rw, "Record Successfully Deleted.")
 }
-

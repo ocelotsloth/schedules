@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 // Semester Collections
@@ -28,14 +28,13 @@ func HandleSemesterCreate(rw http.ResponseWriter, r *http.Request, p httprouter.
 // Semester Singular
 
 func HandleSemesterShow(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleSemesterEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
+
 }
 
 func HandleSemesterDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	
-}
 
+}
