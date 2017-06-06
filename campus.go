@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/imdario/mergo"
 	"net/http"
 )
 
@@ -69,6 +68,7 @@ func HandleCampusShow(rw http.ResponseWriter, r *http.Request, p httprouter.Para
 	json.NewEncoder(rw).Encode(campus)
 }
 
+// TODO: MAKE WORK
 func HandleCampusEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// https://stackoverflow.com/a/15685432
 	var campus Campus
@@ -95,12 +95,13 @@ func HandleCampusEdit(rw http.ResponseWriter, r *http.Request, p httprouter.Para
 		return
 	}
 
-	mergo.Merge(&changedCampus, campus)
+	// mergo.Merge(&changedCampus, campus)
 
 	json.NewEncoder(rw).Encode(changedCampus)
 }
 
 func HandleCampusDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	// Search for Campus Entry
 	var campus Campus
 	dbOp := database.Where("Slug = ?", p.ByName("Slug")).First(&campus)
 	if dbOp.RecordNotFound() {
@@ -114,6 +115,7 @@ func HandleCampusDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Pa
 		log.Critical(dbOp.Error.Error())
 		return
 	}
+	// If found, delete it.
 	tx := database.Begin()
 	err := tx.Unscoped().Delete(&campus).Error
 	if err != nil {
@@ -123,6 +125,7 @@ func HandleCampusDelete(rw http.ResponseWriter, r *http.Request, p httprouter.Pa
 		return
 	}
 	tx.Commit()
+	// Send a response back
 	log.Info(fmt.Sprintf("Record \"%s\" deleted.", campus.Slug))
 	rw.WriteHeader(http.StatusOK)
 	fmt.Fprintf(rw, "Record Successfully Deleted.")
