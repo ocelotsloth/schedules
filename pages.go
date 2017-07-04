@@ -1,4 +1,4 @@
-package main
+package schedules
 
 import (
 	"github.com/julienschmidt/httprouter"
