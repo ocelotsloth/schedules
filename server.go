@@ -11,6 +11,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/user"
+	"path/filepath"
 	"strings"
 )
 
@@ -45,7 +47,16 @@ func initLogging() {
 // startDatabase Starts connection to database
 func startDatabase() {
 	log.Info("Connecting to database...")
-	db, err := gorm.Open("sqlite3", "./schedules.db")
+
+	// Get Database Path
+	usr, _ := user.Current()
+	dir := usr.HomeDir
+	// Change later so that this comes from Viper
+	dbPath := filepath.Join(dir, "Desktop/schedules.db")
+	log.Info(fmt.Sprintf("Database Path: %s", dbPath))
+
+	// Open Database
+	db, err := gorm.Open("sqlite3", dbPath)
 	database = db
 	database.AutoMigrate(Campus{})
 	database.AutoMigrate(Semester{})
