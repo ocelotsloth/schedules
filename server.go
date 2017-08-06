@@ -58,51 +58,16 @@ func startDatabase() {
 	// Open Database
 	db, err := gorm.Open("sqlite3", dbPath)
 	database = db
-	database.AutoMigrate(Campus{})
-	database.AutoMigrate(Semester{})
-	database.AutoMigrate(Course{})
-	database.AutoMigrate(Session{})
-	database.AutoMigrate(ClassType{})
-	database.AutoMigrate(Section{})
+	db.AutoMigrate(Campus{})
+	db.AutoMigrate(Semester{})
+	db.AutoMigrate(Course{})
+	db.AutoMigrate(Session{})
+	db.AutoMigrate(Section{})
 	if err != nil {
 		log.Fatalf("Failed to connect to database. Error: %s\n", err.Error())
 		os.Exit(1)
 	}
 	log.Info("Connected to Database!")
-
-	// Check that the class types are in the database
-	var classTypes []ClassType
-	db.Find(&classTypes)
-	if len(classTypes) == 0 {
-		log.Info("Adding Initial Class Types...")
-
-		db.Save(&ClassType{
-			Model: gorm.Model{
-				ID: 1,
-			},
-			Name: "Lecture",
-		})
-		db.Save(&ClassType{
-			Model: gorm.Model{
-				ID: 2,
-			},
-			Name: "Lab",
-		})
-		db.Save(&ClassType{
-			Model: gorm.Model{
-				ID: 3,
-			},
-			Name: "Recitation",
-		})
-		db.Save(&ClassType{
-			Model: gorm.Model{
-				ID: 4,
-			},
-			Name: "Other",
-		})
-		log.Info("Class Types Added!")
-	}
-
 }
 
 var templates *template.Template
@@ -149,15 +114,6 @@ func startAPI() {
 	r.GET("/sessions/:Slug", HandleSessionShow)
 	r.PATCH("/sessions/:Slug", HandleSessionEdit)
 	r.DELETE("/sessions/:Slug", HandleSessionDelete)
-
-	// ClassType Collection
-	r.GET("/classTypes", HandleClassTypeIndex)
-	r.POST("/classTypes", HandleClassTypeCreate)
-
-	// ClassType Singular
-	r.GET("/classTypes/:Slug", HandleClassTypeShow)
-	r.PATCH("/classTypes/:Slug", HandleClassTypeEdit)
-	r.DELETE("/ClassTypes/:Slug", HandleClassTypeDelete)
 
 	// Section Collection
 	r.GET("/sections", HandleSectionIndex)
