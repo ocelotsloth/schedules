@@ -9,6 +9,13 @@ import (
 
 // Semester Collections
 
+func GetSemesters() ([]Semester, error) {
+	var semesters []Semester
+	database.Find(&semesters)
+	log.Info(semesters)
+	return nil, nil
+}
+
 func HandleSemesterIndex(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var semesters []Semester
 	err := database.Find(&semesters).Error
@@ -42,9 +49,9 @@ func HandleSemesterCreate(rw http.ResponseWriter, r *http.Request, p httprouter.
 	}
 	tx.Commit()
 
-	log.Info("Created new Semester with ID=" + string(newSemester.ID) + ".")
+	//log.Info("Created new Semester with ID=" + string(newSemester.ID) + ".")
 	rw.WriteHeader(http.StatusOK)
-	fmt.Fprintln(rw, newSemester.ID)
+	//fmt.Fprintln(rw, newSemester.ID)
 }
 
 // Semester Singular
@@ -97,7 +104,7 @@ func HandleSemesterDelete(rw http.ResponseWriter, r *http.Request, p httprouter.
 	}
 	tx.Commit()
 	// Send a response back
-	log.Info(fmt.Sprintf("Record \"%s\" deleted.", semester.Slug))
+	//log.Info(fmt.Sprintf("Record \"%s\" deleted.", semester.Slug))
 	rw.WriteHeader(http.StatusOK)
 	fmt.Fprintf(rw, "Record Successfully Deleted.")
 }

@@ -59,10 +59,11 @@ func startDatabase() {
 	db, err := gorm.Open("sqlite3", dbPath)
 	database = db
 	db.AutoMigrate(Campus{})
-	db.AutoMigrate(Semester{})
+	//db.AutoMigrate(Semester{})
 	db.AutoMigrate(Course{})
 	db.AutoMigrate(Session{})
 	db.AutoMigrate(Section{})
+	db.Exec("CREATE VIEW semesters AS SELECT DISTINCT semester AS 'name' FROM sections;")
 	if err != nil {
 		log.Fatalf("Failed to connect to database. Error: %s\n", err.Error())
 		os.Exit(1)

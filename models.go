@@ -15,10 +15,10 @@ type Campus struct {
 
 // Semester
 type Semester struct {
-	gorm.Model
-	Slug string `gorm:"unique_index"`
+	//gorm.Model
+	//Slug string `gorm:"unique_index"`
 	Name string
-	Year string
+	//Year string
 }
 
 // Course
